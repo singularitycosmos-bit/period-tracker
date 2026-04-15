@@ -6,7 +6,7 @@ pain.oninput = () => {
   document.getElementById("painVal").innerText = pain.value;
 };
 
-// SAVE TO GOOGLE SHEETS
+// SAVE
 function saveData() {
   fetch(SCRIPT_URL, {
     method: "POST",
@@ -17,42 +17,45 @@ function saveData() {
       notes: document.getElementById("notes").value
     })
   }).then(() => {
-    alert("Saved ✅");
-    addLocal();
+    show();
   });
 }
 
-// LOCAL DISPLAY
-function addLocal() {
-  let data = JSON.parse(localStorage.getItem("cycleData")) || [];
-
-  data.push({
-    date: document.getElementById("date").value,
-    pain: document.getElementById("pain").value,
-    notes: document.getElementById("notes").value
+// DELETE
+function deleteEntry(id) {
+  fetch(SCRIPT_URL, {
+    method: "POST",
+    body: JSON.stringify({
+      action: "delete",
+      id: id
+    })
+  }).then(() => {
+    show();
   });
-
-  localStorage.setItem("cycleData", JSON.stringify(data));
-
-  show();
 }
 
-// SHOW HISTORY
+// LOAD FROM GOOGLE SHEETS (ONLY SOURCE OF TRUTH)
 function show() {
-  let data = JSON.parse(localStorage.getItem("cycleData")) || [];
-  let history = document.getElementById("history");
+  fetch(SCRIPT_URL)
+    .then(res => res.json())
+    .then(data => {
+      let history = document.getElementById("history");
+      history.innerHTML = "";
 
-  history.innerHTML = "";
+      for (let i = data.length - 1; i >= 0; i--) {
+        history.innerHTML += `
+          <div class="card">
+            <b>${data[i].date}</b><br>
+            Pain: ${data[i].pain}<br>
+            ${data[i].notes || ""}<br><br>
 
-  for (let i = data.length - 1; i >= 0; i--) {
-    history.innerHTML += `
-      <div class="card">
-        <b>${data[i].date}</b><br>
-        Pain: ${data[i].pain}<br>
-        ${data[i].notes || ""}
-      </div>
-    `;
-  }
+            <button onclick="deleteEntry(${data[i].id})">
+              Delete
+            </button>
+          </div>
+        `;
+      }
+    });
 }
 
 window.onload = show;
