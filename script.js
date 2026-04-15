@@ -1,12 +1,10 @@
-let SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwx7Eh3PW3XvXtrinC6pdn6dgftezov_FQHk-v2b6nv-u0b-W62D4ZE93BiMhfKSrM0qA/exec";
+let SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwNpLdDv6AtQ-fFCDY1YsYg66o5CeAG9UgwdU5_eA618KRxRIR2j5OwBLo6SjRSmhm1gg/exec";
 
-// slider
 let pain = document.getElementById("pain");
 pain.oninput = () => {
   document.getElementById("painVal").innerText = pain.value;
 };
 
-// SAVE
 function saveData() {
   fetch(SCRIPT_URL, {
     method: "POST",
@@ -16,12 +14,9 @@ function saveData() {
       pain: document.getElementById("pain").value,
       notes: document.getElementById("notes").value
     })
-  }).then(() => {
-    show();
-  });
+  }).then(() => show());
 }
 
-// DELETE
 function deleteEntry(id) {
   fetch(SCRIPT_URL, {
     method: "POST",
@@ -29,12 +24,9 @@ function deleteEntry(id) {
       action: "delete",
       id: id
     })
-  }).then(() => {
-    show();
-  });
+  }).then(() => show());
 }
 
-// LOAD FROM GOOGLE SHEETS (ONLY SOURCE OF TRUTH)
 function show() {
   fetch(SCRIPT_URL)
     .then(res => res.json())
@@ -42,19 +34,19 @@ function show() {
       let history = document.getElementById("history");
       history.innerHTML = "";
 
-      for (let i = data.length - 1; i >= 0; i--) {
+      data.reverse().forEach(item => {
         history.innerHTML += `
-          <div class="card">
-            <b>${data[i].date}</b><br>
-            Pain: ${data[i].pain}<br>
-            ${data[i].notes || ""}<br><br>
+          <div class="entry">
+            <b>${item.date}</b><br>
+            Pain: ${item.pain}/10<br>
+            ${item.notes || ""}
 
-            <button onclick="deleteEntry(${data[i].id})">
+            <button class="deleteBtn" onclick="deleteEntry(${item.id})">
               Delete
             </button>
           </div>
         `;
-      }
+      });
     });
 }
 
