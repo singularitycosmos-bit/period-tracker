@@ -20,13 +20,17 @@ function saveData() {
 function deleteEntry(id) {
   fetch(SCRIPT_URL, {
     method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
     body: JSON.stringify({
       action: "delete",
-      id: id
+      id: String(id)
     })
-  }).then(() => show());
+  }).then(() => {
+    show();
+  });
 }
-
 function show() {
   fetch(SCRIPT_URL)
     .then(res => res.json())
