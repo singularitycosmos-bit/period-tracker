@@ -1,4 +1,4 @@
-let SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwNpLdDv6AtQ-fFCDY1YsYg66o5CeAG9UgwdU5_eA618KRxRIR2j5OwBLo6SjRSmhm1gg/exec";
+let SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzFG-ADwd0N0376SBydOfEmGAG6bT0Kxa3uJQcBbjRye0pNdQvxwe4uq6DfMwPr2K0E7w/exec";
 
 let pain = document.getElementById("pain");
 pain.oninput = () => {
