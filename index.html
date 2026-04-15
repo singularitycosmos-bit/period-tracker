@@ -2,92 +2,30 @@
 <html>
 <head>
   <title>Cycle Tracker</title>
-
-  <style>
-    body {font-family:Arial;background:#f5f7fb;padding:20px;}
-    .app {max-width:420px;margin:auto;background:white;padding:20px;border-radius:15px;}
-    input,textarea {width:100%;margin-top:10px;padding:10px;}
-    button {width:100%;margin-top:10px;padding:10px;background:#4a6cf7;color:white;border:none;border-radius:10px;}
-    .card {background:#f1f3f8;padding:10px;margin-top:10px;border-radius:10px;}
-  </style>
+  <link rel="stylesheet" href="style.css">
 </head>
-<script src="script.js"></script>
+
 <body>
 
 <div class="app">
 
-<h2>Cycle Tracker</h2>
+  <h2>Cycle Tracker</h2>
 
-<input type="date" id="date">
+  <input type="date" id="date">
 
-<input type="range" min="1" max="10" id="pain">
-<p>Pain: <span id="painVal">5</span></p>
+  <input type="range" min="1" max="10" id="pain">
+  <p>Pain: <span id="painVal">5</span></p>
 
-<textarea id="notes"></textarea>
+  <textarea id="notes" placeholder="Notes"></textarea>
 
-<button onclick="saveData()">Save</button>
+  <button onclick="saveData()">Save</button>
 
-<h3>History</h3>
-<div id="history"></div>
+  <h3>History</h3>
+  <div id="history"></div>
 
 </div>
 
-<script>
-let SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwx7Eh3PW3XvXtrinC6pdn6dgftezov_FQHk-v2b6nv-u0b-W62D4ZE93BiMhfKSrM0qA/exec";
-
-let pain = document.getElementById("pain");
-pain.oninput = () => document.getElementById("painVal").innerText = pain.value;
-
-// SAVE
-function saveData(){
-  fetch(SCRIPT_URL,{
-    method:"POST",
-    body: JSON.stringify({
-      action:"add",
-      date: document.getElementById("date").value,
-      pain: document.getElementById("pain").value,
-      notes: document.getElementById("notes").value
-    })
-  }).then(() => {
-    loadData();
-  });
-}
-
-// LOAD (from sheet via stored local preview trick)
-function loadData(){
-  fetch(SCRIPT_URL, {method:"POST", body: JSON.stringify({action:"read"})})
-}
-
-// DELETE
-function deleteEntry(id){
-  fetch(SCRIPT_URL,{
-    method:"POST",
-    body: JSON.stringify({
-      action:"delete",
-      id:id
-    })
-  }).then(() => {
-    location.reload();
-  });
-}
-
-// SIMPLE LOCAL DISPLAY (from last saved cache idea)
-function show(data){
-  let history = document.getElementById("history");
-  history.innerHTML = "";
-
-  for(let i=data.length-1;i>=0;i--){
-    history.innerHTML += `
-      <div class="card">
-        <b>${data[i].date}</b><br>
-        Pain: ${data[i].pain}<br>
-        ${data[i].notes}<br><br>
-        <button onclick="deleteEntry(${data[i].id})">Delete</button>
-      </div>
-    `;
-  }
-}
-</script>
+<script src="script.js"></script>
 
 </body>
 </html>
